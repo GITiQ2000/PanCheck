@@ -1,9 +1,13 @@
 const express = require('express');
 const { sql, poolPromise } = require('./db');
 const app = express();
-const port = process.env.PORT || 3000;
+const port =  80;
 
 app.use(express.json());
+
+
+app.get('/', async (req,res)=>{
+res.send("hi")});
 
 app.get('/PAN/:PANNumber', async (req, res) => {
     const PAN_Number = req.params.PANNumber;
@@ -15,7 +19,6 @@ app.get('/PAN/:PANNumber', async (req, res) => {
             .query('SELECT * FROM config.[Account] WHERE PANNo = @PAN_Number');
     
 
-console.log(result.recordsets)
 const innerarray = result.recordsets[0];
             const Data = innerarray.map(e => {
 
@@ -27,7 +30,9 @@ const innerarray = result.recordsets[0];
 
 
             const beautifiedJSON = JSON.stringify(Data, null, 2);
+            
             res.setHeader('Content-Type', 'application/json');
+            
             res.send(beautifiedJSON);
 
 
@@ -54,6 +59,6 @@ const innerarray = result.recordsets[0];
 // });
 
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`Server running on port ${port}`);
 });
